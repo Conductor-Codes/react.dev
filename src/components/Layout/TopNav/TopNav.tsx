@@ -16,6 +16,7 @@ import cn from 'classnames';
 import NextLink from 'next/link';
 import {useRouter} from 'next/router';
 import {disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
+import ButtonLink from '../../ButtonLink';
 
 import {IconClose} from 'components/Icon/IconClose';
 import {IconHamburger} from 'components/Icon/IconHamburger';
@@ -146,6 +147,47 @@ function Kbd(props: {children?: React.ReactNode; wide?: boolean}) {
       className={`${width} h-5 border border-transparent me-1 bg-wash dark:bg-wash-dark text-gray-30 align-middle p-0 inline-flex justify-center items-center text-xs text-center rounded-md`}
       {...rest}
     />
+  );
+}
+
+function SlowLoadingButton() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = () => {
+    setIsLoading(true);
+    // Simulate slow loading for 2 seconds before redirecting
+    setTimeout(() => {
+      window.location.href = 'https://rob.com';
+    }, 2000);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={isLoading}
+      className="flex items-center justify-center px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors disabled:bg-blue-300"
+      style={{minWidth: '70px'}}>
+      {isLoading ? (
+        <div className="flex items-center justify-center">
+          <svg className="w-5 h-5 mr-2 animate-spin" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+      ) : (
+        'ROB'
+      )}
+    </button>
   );
 }
 
@@ -385,6 +427,9 @@ export default function TopNav({
                     className="flex items-center justify-center w-12 h-12 transition-transform rounded-full active:scale-95 hover:bg-primary/5 hover:dark:bg-primary-dark/5 outline-link">
                     {githubIcon}
                   </Link>
+                </div>
+                <div className="flex ml-2 items-center">
+                  <SlowLoadingButton />
                 </div>
               </div>
             </div>
