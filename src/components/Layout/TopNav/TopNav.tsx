@@ -105,6 +105,37 @@ const githubIcon = (
   </svg>
 );
 
+function SlowLoadButton() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Simulate slow loading with a timeout
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 3000); // 3 second delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isVisible) {
+    return (
+      <div className="w-12 h-12 flex items-center justify-center">
+        <div className="animate-pulse w-5 h-5 rounded-full bg-gray-30 dark:bg-gray-40"></div>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href="https://rob.com"
+      target="_blank"
+      rel="noreferrer noopener"
+      className="flex items-center justify-center w-12 h-12 transition-transform rounded-full active:scale-95 hover:bg-primary/5 hover:dark:bg-primary-dark/5 outline-link">
+      <span className="font-bold text-link dark:text-link-dark">Rob</span>
+    </Link>
+  );
+}
+
 function Link({
   href,
   children,
@@ -385,6 +416,9 @@ export default function TopNav({
                     className="flex items-center justify-center w-12 h-12 transition-transform rounded-full active:scale-95 hover:bg-primary/5 hover:dark:bg-primary-dark/5 outline-link">
                     {githubIcon}
                   </Link>
+                </div>
+                <div className="flex">
+                  <SlowLoadButton />
                 </div>
               </div>
             </div>
