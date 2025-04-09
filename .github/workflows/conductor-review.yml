@@ -21,6 +21,6 @@ jobs:
       
       # Run Conductor code review
       - name: Conductor Code Review
-        uses: conductorcodes/conductor-action@v1
+        uses: conductor-codes/conductor-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
