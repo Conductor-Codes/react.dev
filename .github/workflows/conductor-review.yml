@@ -9,9 +9,8 @@ on:
 jobs:
   code-review:
     # Don't run on draft PRs
-    if: github.event.pull_request.draft == false || github.event_name == 'issue_comment'
     # Only run on issue comments that include '@conductor review'
-    if: ${{ github.event_name != 'issue_comment' || contains(github.event.comment.body, '@conductor review') }}
+    if: github.event.pull_request.draft == false || ${{ github.event_name != 'issue_comment' || contains(github.event.comment.body, '@conductor review') }}
     runs-on: ubuntu-latest
     
     steps:
