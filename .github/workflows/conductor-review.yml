@@ -1,0 +1,24 @@
+name: Conductor Code Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Get complete history for better context
+      
+      - name: Conductor Code Review
+        uses: conductor-codes/conductor-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          conductor_llm_config: ${{ secrets.CONDUCTOR_LLM_CONFIG }}
+          conductor_api_key: ${{ secrets.CONDUCTOR_API_KEY }}
