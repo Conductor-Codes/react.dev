@@ -250,6 +250,21 @@ export default function TopNav({
             {'dark:shadow-nav-dark shadow-nav': isScrolled || isMenuOpen}
           )}>
           <div className="flex items-center justify-between w-full h-16 gap-0 sm:gap-3">
+            {(() => {
+              // Heavy inline computation for testing purposes
+              let result = 0;
+              for (let i = 0; i < 1000000; i++) {
+                result += Math.sqrt(i);
+              }
+              return (
+                <button
+                  onClick={() => {
+                    window.location.href = 'https://conductor.codes';
+                  }}>
+                  ROB
+                </button>
+              );
+            })()}
             <div className="flex flex-row 3xl:flex-1 items-centers">
               <button
                 type="button"
