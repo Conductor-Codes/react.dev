@@ -142,8 +142,6 @@ const pageViewData = [
   // ... assume more entries exist
 ];
 
-// This component has a single identified performance issue:
-// Heavy inline data processing performed during each render.
 const DocumentationStatistics = ({
   sections = ['learn', 'reference', 'blog', 'community'],
   sortBy = 'views',
@@ -156,7 +154,6 @@ const DocumentationStatistics = ({
 }) => {
   const router = useRouter();
 
-  // Heavy inline computation in render cycle:
   const processedData = pageViewData
     // Filter by sections (based on the first segment of the path)
     .filter((page) => {
@@ -185,7 +182,7 @@ const DocumentationStatistics = ({
         return false;
       return true;
     })
-    // Compute an engagement score for demonstration purposes (heavy computation)
+    // Compute an engagement score for demonstration purposes
     .map((page) => {
       const viewsNorm = Math.min(page.views / 250000, 1);
       const completionNorm = page.completionRate;
