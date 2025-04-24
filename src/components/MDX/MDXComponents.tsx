@@ -33,6 +33,7 @@ import type {Toc, TocItem} from './TocContext';
 import {TeamMember} from './TeamMember';
 import {LanguagesContext} from './LanguagesContext';
 import {finishedTranslations} from 'utils/finishedTranslations';
+import DocumentationStatistics from '../DocumentationStatistics';
 
 import ErrorDecoder from './ErrorDecoder';
 import {IconCanary} from '../Icon/IconCanary';
@@ -463,6 +464,7 @@ export const MDXComponents = {
   }) => <ExpandableExample {...props} type="DeepDive" />,
   Diagram,
   DiagramGroup,
+  DocumentationStatistics,
   FullWidth({children}: {children: any}) {
     return children;
   },
