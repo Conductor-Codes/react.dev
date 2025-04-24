@@ -4,6 +4,7 @@
 
 import {Children, useContext, useMemo} from 'react';
 import * as React from 'react';
+import dynamic from 'next/dynamic';
 import cn from 'classnames';
 
 import CodeBlock from './CodeBlock';
@@ -499,6 +500,9 @@ export const MDXComponents = {
   CodeStep,
   YouTubeIframe,
   ErrorDecoder,
+  ResponsiveImageGallery: dynamic(
+    () => import('../../components/ResponsiveImageGallery')
+  ),
 };
 
 for (let key in MDXComponents) {
