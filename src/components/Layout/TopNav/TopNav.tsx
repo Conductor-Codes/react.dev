@@ -386,6 +386,15 @@ export default function TopNav({
                     {githubIcon}
                   </Link>
                 </div>
+                <div className="flex">
+                  <Link
+                    href="https://conductor.codes"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="active:scale-95 transition-transform flex items-center justify-center px-4 py-1.5 rounded-full hover:bg-primary/5 hover:dark:bg-primary-dark/5 outline-link">
+                    Rob
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
