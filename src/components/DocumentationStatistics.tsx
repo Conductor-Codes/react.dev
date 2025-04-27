@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {useRouter} from 'next/router';
 
 // Simulated analytics data for demonstration purposes
@@ -158,103 +158,95 @@ const DocumentationStatistics = ({
   const [selectedSortMethod, setSelectedSortMethod] = useState(sortBy);
   const [hoveredRow, setHoveredRow] = useState(null);
 
-  const processedData = pageViewData
-    // Filter by sections (based on the first segment of the path)
-    .filter((page) => {
-      const pageSection = page.path.split('/')[1];
-      return sections.includes(pageSection);
-    })
-    // Filter by difficulty if specified
-    .filter((page) => {
-      return (
-        selectedDifficulty === 'all' || page.difficulty === selectedDifficulty
-      );
-    })
-    // Optionally filter out outdated content
-    .filter((page) => {
-      if (includeOutdated) return true;
-      const lastUpdated = new Date(page.lastUpdated);
-      const sixMonthsAgo = new Date();
-      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      return lastUpdated > sixMonthsAgo;
-    })
-    // Apply metric thresholds
-    .filter((page) => {
-      if (minimumViews > 0 && page.views < minimumViews) return false;
-      if (
-        minimumCompletionRate > 0 &&
-        page.completionRate < minimumCompletionRate / 100
-      )
-        return false;
-      return true;
-    })
-    // Compute an engagement score for demonstration purposes
-    .map((page) => {
-      const viewsNorm = Math.min(page.views / 250000, 1);
-      const completionNorm = page.completionRate;
-      const timeSpentNorm = Math.min(page.avgTimeSpent / 600, 1);
+  const processedData = useMemo(() => {
+    return pageViewData
+      // Filter by sections (based on the first segment of the path)
+      .filter((page) => {
+        const pageSection = page.path.split('/')[1];
+        return sections.includes(pageSection);
+      })
+      // Filter by difficulty if specified
+      .filter((page) => {
+        return (
+          selectedDifficulty === 'all' || page.difficulty === selectedDifficulty
+        );
+      })
+      // Optionally filter out outdated content
+      .filter((page) => {
+        if (includeOutdated) return true;
+        const lastUpdated = new Date(page.lastUpdated);
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        return lastUpdated > sixMonthsAgo;
+      })
+      // Apply metric thresholds
+      .filter((page) => {
+        if (minimumViews > 0 && page.views < minimumViews) return false;
+        if (
+          minimumCompletionRate > 0 &&
+          page.completionRate < minimumCompletionRate / 100
+        )
+          return false;
+        return true;
+      })
+      // Compute an engagement score for demonstration purposes
+      .map((page) => {
+        const viewsNorm = Math.min(page.views / 250000, 1);
+        const completionNorm = page.completionRate;
+        const timeSpentNorm = Math.min(page.avgTimeSpent / 600, 1);
 
-      // Freshness factor computed from last update date
-      const lastUpdated = new Date(page.lastUpdated);
-      const monthsOld = (new Date() - lastUpdated) / (30 * 24 * 60 * 60 * 1000);
-      const freshnessScore = Math.max(0, 1 - monthsOld / 24);
+        // Freshness factor computed from last update date
+        const lastUpdated = new Date(page.lastUpdated);
+        const monthsOld = (new Date() - lastUpdated) / (30 * 24 * 60 * 60 * 1000);
+        const freshnessScore = Math.max(0, 1 - monthsOld / 24);
 
-      // Difficulty multiplier for weighting
-      let difficultyMultiplier = 1;
-      if (page.difficulty === 'beginner') difficultyMultiplier = 0.9;
-      if (page.difficulty === 'intermediate') difficultyMultiplier = 1.0;
-      if (page.difficulty === 'advanced') difficultyMultiplier = 1.2;
+        // Difficulty multiplier for weighting
+        let difficultyMultiplier = 1;
+        if (page.difficulty === 'beginner') difficultyMultiplier = 0.9;
+        if (page.difficulty === 'intermediate') difficultyMultiplier = 1.0;
+        if (page.difficulty === 'advanced') difficultyMultiplier = 1.2;
 
-      // Compute weighted engagement score
-      const engagementScore =
-        (0.4 * viewsNorm +
-          0.3 * completionNorm +
-          0.2 * timeSpentNorm +
-          0.1 * Math.pow(freshnessScore, 2)) *
-        difficultyMultiplier;
+        // Compute weighted engagement score
+        const engagementScore =
+          (0.4 * viewsNorm +
+            0.3 * completionNorm +
+            0.2 * timeSpentNorm +
+            0.1 * Math.pow(freshnessScore, 2)) *
+          difficultyMultiplier;
 
-      return {
-        ...page,
-        engagementScore,
-      };
-    })
-    // Sort the computed results
-    .sort((a, b) => {
-      let comparison = 0;
-      if (selectedSortMethod === 'views') {
-        comparison = b.views - a.views;
-      } else if (selectedSortMethod === 'completion') {
-        comparison = b.completionRate - a.completionRate;
-      } else if (selectedSortMethod === 'timeSpent') {
-        comparison = b.avgTimeSpent - a.avgTimeSpent;
-      } else if (selectedSortMethod === 'engagement') {
-        comparison = b.engagementScore - a.engagementScore;
-      } else if (selectedSortMethod === 'lastUpdated') {
-        comparison = new Date(b.lastUpdated) - new Date(a.lastUpdated);
-      }
-      return sortOrder === 'desc' ? comparison : -comparison;
-    })
-    // Limit the results to displayLimit entries.
-    .slice(0, displayLimit);
-
-  const filterControls = (
-    <div
-      className="filter-controls"
-      style={{marginBottom: '20px', display: 'flex', gap: '15px'}}>
-      <div>
-        <select
-          value={selectedDifficulty}
-          onChange={(e) => setSelectedDifficulty(e.target.value)}
-          style={{
-            padding: '8px 12px',
-            borderRadius: '6px',
-            border: '1px solid #ccc',
-            backgroundColor: '#f7f7f7',
-            color: '#333',
-          }}>
-          <option value="all">All Difficulties</option>
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
+        return {
+          ...page,
+          engagementScore,
+        };
+      })
+      // Sort the computed results
+      .sort((a, b) => {
+        let comparison = 0;
+        if (selectedSortMethod === 'views') {
+          comparison = b.views - a.views;
+        } else if (selectedSortMethod === 'completion') {
+          comparison = b.completionRate - a.completionRate;
+        } else if (selectedSortMethod === 'timeSpent') {
+          comparison = b.avgTimeSpent - a.avgTimeSpent;
+        } else if (selectedSortMethod === 'engagement') {
+          comparison = b.engagementScore - a.engagementScore;
+        } else if (selectedSortMethod === 'lastUpdated') {
+          comparison = new Date(b.lastUpdated) - new Date(a.lastUpdated);
+        }
+        return sortOrder === 'desc' ? comparison : -comparison;
+      })
+      // Limit the results to displayLimit entries.
+      .slice(0, displayLimit);
+  }, [
+    sections,
+    selectedDifficulty,
+    includeOutdated,
+    minimumViews,
+    minimumCompletionRate,
+    selectedSortMethod,
+    sortOrder,
+    displayLimit,
+  ]);
           <option value="advanced">Advanced</option>
         </select>
       </div>
