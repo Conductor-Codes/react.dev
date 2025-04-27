@@ -563,11 +563,9 @@ const DocumentationStatistics = ({
       <div style={{textAlign: 'center', marginTop: '20px'}}>
         <img
           src="/images/meta-gradient.png"
+          alt=""
+          role="presentation"
           style={{height: '3px', width: '50%'}}
         />
-      </div>
-    </div>
-  );
-};
 
 export default DocumentationStatistics;
