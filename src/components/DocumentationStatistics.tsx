@@ -570,15 +570,10 @@ const DocumentationStatistics = ({
           </tbody>
         </table>
       </div>
-
-      <div style={{textAlign: 'center', marginTop: '20px'}}>
         <img
           src="/images/meta-gradient.png"
+          alt=""
+          width="600" // Example width, adjust as needed
+          height="3"  // Example height, adjust as needed
           style={{height: '3px', width: '50%'}}
         />
-      </div>
-    </div>
-  );
-};
-
-export default DocumentationStatistics;
