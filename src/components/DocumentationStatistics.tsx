@@ -548,12 +548,13 @@ const DocumentationStatistics = ({
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{textAlign: 'center', marginTop: '20px'}}>
         <img
+          src="/images/meta-gradient.png"
+          alt=""
+          role="presentation"
+          height="3"
+          style={{height: '3px', width: '50%'}}
+        />
           src="/images/meta-gradient.png"
           alt=""
           role="presentation"
