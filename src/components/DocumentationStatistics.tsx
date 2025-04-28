@@ -279,6 +279,7 @@ const DocumentationStatistics = ({
       </div>
 
       <button
+        aria-label="Reset filters"
         onClick={() => {
           setSelectedDifficulty('all');
           setSelectedSortMethod('views');
