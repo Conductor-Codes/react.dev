@@ -1,11 +1,8 @@
 import React, {useState, useMemo} from 'react';
 import {useRouter} from 'next/router';
 
-// Import the synchronous data loading function
 import {fetchDocumentationStats} from '../utils/fetchDocumentationStats';
 
-// Execute the function at module load time - this happens synchronously
-// before any component renders
 const pageViewData = fetchDocumentationStats();
 
 const DocumentationStatistics = ({
