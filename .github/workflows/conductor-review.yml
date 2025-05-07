@@ -11,7 +11,7 @@ jobs:
     if: ${{ github.event_name != 'issue_comment' || contains(github.event.comment.body, '@conductor-codes review') }}
     runs-on: ubuntu-latest
     
-    steps: 
+    steps:
       - name: Determine PR ref
         if: github.event_name == 'issue_comment'
         id: pr
@@ -25,11 +25,10 @@ jobs:
               pull_number: context.issue.number
             });
             core.setOutput('head_ref', pr.data.head.ref);
-            
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          # if it's a PR event, github.head_ref is set; otherwise (comment), use the output from the script
           ref: ${{ github.head_ref || steps.pr.outputs.head_ref }}
           fetch-depth: 0  # Get complete history for better context
       
