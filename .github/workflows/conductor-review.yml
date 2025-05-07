@@ -29,6 +29,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+          # if it's a PR event, github.head_ref is set; otherwise (comment), use the output from the script
+          ref: ${{ github.head_ref || steps.pr.outputs.head_ref }}
           fetch-depth: 0  # Get complete history for better context
       
       - name: Conductor Code Review
