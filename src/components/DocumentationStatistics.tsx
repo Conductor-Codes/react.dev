@@ -247,7 +247,11 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
       className="filter-controls"
       style={{marginBottom: '20px', display: 'flex', gap: '15px'}}>
       <div>
+        <label htmlFor="difficulty-filter" style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem' }}>
+          Filter by difficulty level:
+        </label>
         <select
+          id="difficulty-filter"
           value={selectedDifficulty}
           onChange={(e) => setSelectedDifficulty(e.target.value)}
           style={{
