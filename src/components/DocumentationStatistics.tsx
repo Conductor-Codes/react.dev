@@ -565,9 +565,11 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
         </table>
       </div>
 
-      <div style={{textAlign: 'center', marginTop: '20px'}}>
+<div style={{textAlign: 'center', marginTop: '20px'}}>
         <img
           src="/images/meta-gradient.png"
+          width="800"
+          height="3"
           style={{height: '3px', width: '50%'}}
         />
       </div>
