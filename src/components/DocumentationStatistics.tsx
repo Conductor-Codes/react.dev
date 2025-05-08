@@ -194,24 +194,29 @@ const DocumentationStatistics = ({
       const completionNorm = page.completionRate;
       const timeSpentNorm = Math.min(page.avgTimeSpent / 600, 1);
 
-      // Freshness factor computed from last update date
-      const lastUpdated = new Date(page.lastUpdated);
-      const monthsOld = (new Date() - lastUpdated) / (30 * 24 * 60 * 60 * 1000);
-      const freshnessScore = Math.max(0, 1 - monthsOld / 24);
+// Compute freshness factor and engagement score using useMemo
+const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(() => {
+  // Freshness factor computed from last update date
+  const lastUpdated = new Date(page.lastUpdated);
+  const monthsOld = (new Date() - lastUpdated) / (30 * 24 * 60 * 60 * 1000);
+  const freshnessScore = Math.max(0, 1 - monthsOld / 24);
 
-      // Difficulty multiplier for weighting
-      let difficultyMultiplier = 1;
-      if (page.difficulty === 'beginner') difficultyMultiplier = 0.9;
-      if (page.difficulty === 'intermediate') difficultyMultiplier = 1.0;
-      if (page.difficulty === 'advanced') difficultyMultiplier = 1.2;
+  // Difficulty multiplier for weighting
+  let difficultyMultiplier = 1;
+  if (page.difficulty === 'beginner') difficultyMultiplier = 0.9;
+  if (page.difficulty === 'intermediate') difficultyMultiplier = 1.0;
+  if (page.difficulty === 'advanced') difficultyMultiplier = 1.2;
 
-      // Compute weighted engagement score
-      const engagementScore =
-        (0.4 * viewsNorm +
-          0.3 * completionNorm +
-          0.2 * timeSpentNorm +
-          0.1 * Math.pow(freshnessScore, 2)) *
-        difficultyMultiplier;
+  // Compute weighted engagement score
+  const engagementScore =
+    (0.4 * viewsNorm +
+      0.3 * completionNorm +
+      0.2 * timeSpentNorm +
+      0.1 * Math.pow(freshnessScore, 2)) *
+    difficultyMultiplier;
+    
+  return { freshnessScore, difficultyMultiplier, engagementScore };
+}, [page.lastUpdated, page.difficulty, viewsNorm, completionNorm, timeSpentNorm]);
 
       return {
         ...page,
