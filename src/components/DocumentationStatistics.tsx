@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useRouter} from 'next/router';
 
 // Simulated analytics data for demonstration purposes
@@ -25,11 +25,9 @@ const DocumentationStatistics = ({
       try {
         // This will code-split the data into a separate chunk
         const module = await import('../data/pageViewData');
-        setData(module.default);
+        setData(module.pageViewData);
       } catch (error) {
         console.error('Failed to load page view data:', error);
-      } finally {
-        setLoading(false);
       }
     };
     loadData();
@@ -65,35 +63,10 @@ const DocumentationStatistics = ({
         return false;
       return true;
     })
-    // Compute an engagement score for demonstration purposes
     .map((page) => {
       const viewsNorm = Math.min(page.views / 250000, 1);
       const completionNorm = page.completionRate;
-      const timeSpentNorm = Math.min(page.avgTimeSpent / 600, 1);
-
-// Compute freshness factor and engagement score using useMemo
-const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(() => {
-  // Freshness factor computed from last update date
-  const lastUpdated = new Date(page.lastUpdated);
-  const monthsOld = (new Date() - lastUpdated) / (30 * 24 * 60 * 60 * 1000);
-  const freshnessScore = Math.max(0, 1 - monthsOld / 24);
-
-  // Difficulty multiplier for weighting
-  let difficultyMultiplier = 1;
-  if (page.difficulty === 'beginner') difficultyMultiplier = 0.9;
-  if (page.difficulty === 'intermediate') difficultyMultiplier = 1.0;
-  if (page.difficulty === 'advanced') difficultyMultiplier = 1.2;
-
-  // Compute weighted engagement score
-  const engagementScore =
-    (0.4 * viewsNorm +
-      0.3 * completionNorm +
-      0.2 * timeSpentNorm +
-      0.1 * Math.pow(freshnessScore, 2)) *
-    difficultyMultiplier;
-    
-  return { freshnessScore, difficultyMultiplier, engagementScore };
-}, [page.lastUpdated, page.difficulty, viewsNorm, completionNorm, timeSpentNorm]);
+      const engagementScore = 0.6 * viewsNorm + 0.4 * completionNorm;
 
       return {
         ...page,
@@ -124,7 +97,9 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
       className="filter-controls"
       style={{marginBottom: '20px', display: 'flex', gap: '15px'}}>
       <div>
-        <label htmlFor="difficulty-filter" style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem' }}>
+        <label
+          htmlFor="difficulty-filter"
+          style={{display: 'block', marginBottom: '5px', fontSize: '0.9rem'}}>
           Filter by difficulty level:
         </label>
         <select
@@ -146,7 +121,13 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
       </div>
 
       <div>
+        <label
+          htmlFor="sort-by-views"
+          style={{display: 'block', marginBottom: '5px', fontSize: '0.9rem'}}>
+          Sort by views
+        </label>
         <select
+          id="sort-by-views"
           value={selectedSortMethod}
           onChange={(e) => setSelectedSortMethod(e.target.value)}
           style={{
@@ -164,21 +145,23 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
         </select>
       </div>
 
-      <button
-        onClick={() => {
-          setSelectedDifficulty('all');
-          setSelectedSortMethod('views');
-        }}
-        style={{
-          padding: '8px 16px',
-          backgroundColor: '#0969da',
-          color: 'white',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer',
-        }}>
-        <span className="icon">↺</span>
-      </button>
+      <div style={{display: 'flex', alignItems: 'flex-end'}}>
+        <button
+          onClick={() => {
+            setSelectedDifficulty('all');
+            setSelectedSortMethod('views');
+          }}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#0969da',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+          }}>
+          <span className="icon">↺</span>
+        </button>
+      </div>
     </div>
   );
 
@@ -233,7 +216,7 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
 
       {filterControls}
 
-<div
+      <div
         className="stats-chart"
         style={{
           marginBottom: '30px',
@@ -243,7 +226,7 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
           gap: '8px',
         }}>
         {processedData.slice(0, 7).map((page, idx) => (
-          <div
+          <button
             key={idx}
             style={{
               height: `${Math.max(5, (page.views / 250000) * 100)}%`,
@@ -277,7 +260,7 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
                 views
               </div>
             )}
-          </div>
+          </button>
         ))}
       </div>
 
@@ -448,11 +431,12 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
         </table>
       </div>
 
-<div style={{textAlign: 'center', marginTop: '20px'}}>
+      <div style={{textAlign: 'center', marginTop: '20px'}}>
         <img
           src="/images/meta-gradient.png"
           width="800"
           height="3"
+          alt=""
           style={{height: '3px', width: '50%'}}
         />
       </div>
