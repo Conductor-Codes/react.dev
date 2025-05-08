@@ -352,7 +352,7 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
 
       {filterControls}
 
-      <div
+<div
         className="stats-chart"
         style={{
           marginBottom: '30px',
@@ -365,12 +365,14 @@ const { freshnessScore, difficultyMultiplier, engagementScore } = React.useMemo(
           <div
             key={idx}
             style={{
-              height: `${(page.views / 250000) * 100}%`,
+              height: `${Math.max(5, (page.views / 250000) * 100)}%`,
               backgroundColor: getDifficultyColor(page.difficulty),
               flex: 1,
               borderRadius: '4px 4px 0 0',
               position: 'relative',
               cursor: 'pointer',
+              minHeight: '4px',
+              transition: 'height 0.3s ease-out',
             }}
             onClick={() => router.push(page.path)}
             onMouseEnter={() => setHoveredRow(page.path)}
