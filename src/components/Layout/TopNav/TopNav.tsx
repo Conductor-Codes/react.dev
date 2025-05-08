@@ -328,11 +328,14 @@ export default function TopNav({
                   url="/reference/react">
                   Reference
                 </NavItem>
-                <NavItem isActive={section === 'community'} url="/community">
-                  Community
-                </NavItem>
+                <NavItem url="/community">Community</NavItem>
                 <NavItem isActive={section === 'blog'} url="/blog">
                   Blog
+                </NavItem>
+                <NavItem
+                  isActive={section === 'community'}
+                  url="/community/statistics">
+                  Analytics
                 </NavItem>
               </div>
               <div className="flex w-full md:hidden"></div>
@@ -423,6 +426,7 @@ export default function TopNav({
                     <NavItem isActive={section === 'blog'} url="/blog">
                       Blog
                     </NavItem>
+                    <NavItem url="/community/statistics">Analytics</NavItem>
                   </div>
                   <div
                     role="separator"
