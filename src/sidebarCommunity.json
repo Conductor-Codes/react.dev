@@ -44,6 +44,14 @@
           "path": "/community/versioning-policy"
         }
       ]
+    },
+    {
+      "hasSectionHeader": true,
+      "sectionHeader": "ANALYTICS"
+    },
+    {
+      "title": "Documentation Analytics",
+      "path": "/community/statistics"
     }
   ]
 }
