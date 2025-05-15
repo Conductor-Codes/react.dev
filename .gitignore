@@ -46,3 +46,4 @@ public/rss.xml
 # Directory for Stride Conductor local files
 .conductor/config.yml
 .conductor/story_context.md
+.early.coverage
